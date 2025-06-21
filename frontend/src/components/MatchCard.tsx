@@ -10,9 +10,13 @@ export default function MatchCard({ match }: Props) {
     timeStyle: 'short',
   })
 
-  // Buscar algo para substituir pelos escudos reais via API
-  const getShield = (team: string) =>
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(team)}&background=random&size=48`
+  const getInitials = (name: string) =>
+    name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+
 
   return (
     <div className="bg-white rounded-2xl shadow border border-gray-200 px-6 py-5 mb-6 hover:shadow-lg transition">
@@ -25,11 +29,18 @@ export default function MatchCard({ match }: Props) {
       <div className="flex items-center justify-between mb-3">
         {/* Time da casa */}
         <div className="flex items-center gap-3 w-1/3">
-          <img
-            src={getShield(match.teams.home.name)}
-            alt={match.teams.home.name}
-            className="w-9 h-9 rounded-full border"
-          />
+          {match.teams.home.logo ? (
+            <img
+              src={match.teams.home.logo}
+              alt={match.teams.home.name}
+              className="w-10 h-10 object-contain rounded-full"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+              {getInitials(match.teams.home.name)}
+            </div>
+          )}
+
           <span className="text-sm font-medium text-gray-800 truncate">
             {match.teams.home.name}
           </span>
@@ -41,8 +52,8 @@ export default function MatchCard({ match }: Props) {
             {match.score.home} - {match.score.away}
           </span>
           <span className={`text-xs mt-1 px-2 py-0.5 rounded-full ${match.status === 'FT' ? 'bg-green-100 text-green-700' :
-              match.status === 'NS' ? 'bg-yellow-100 text-yellow-700' :
-                'bg-blue-100 text-blue-700'
+            match.status === 'NS' ? 'bg-yellow-100 text-yellow-700' :
+              'bg-blue-100 text-blue-700'
             }`}>
             {match.status}
           </span>
@@ -53,11 +64,19 @@ export default function MatchCard({ match }: Props) {
           <span className="text-sm font-medium text-gray-800 text-right truncate">
             {match.teams.away.name}
           </span>
-          <img
-            src={getShield(match.teams.away.name)}
-            alt={match.teams.away.name}
-            className="w-9 h-9 rounded-full border"
-          />
+          {match.teams.away.logo ? (
+            <img
+              src={match.teams.away.logo}
+              alt={match.teams.away.name}
+              className="w-10 h-10 object-contain rounded-full"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+              {getInitials(match.teams.away.name)}
+            </div>
+          )}
+
+
         </div>
       </div>
 

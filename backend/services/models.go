@@ -24,9 +24,11 @@ type MatchRaw struct {
 	Teams struct {
 		Home struct {
 			Name string `json:"name"`
+			Logo string `json:"logo"`
 		} `json:"home"`
 		Away struct {
 			Name string `json:"name"`
+			Logo string `json:"logo"`
 		} `json:"away"`
 	} `json:"teams"`
 
@@ -38,6 +40,7 @@ type MatchRaw struct {
 
 type Team struct {
 	Name string `json:"name"`
+	Logo string `json:"logo"`
 }
 
 type Teams struct {

@@ -115,8 +115,8 @@ func GetMatchDetails(matchID string) (MatchFormatted, error) {
 		Stadium: m.Fixture.Venue.Name,
 		Referee: m.Fixture.Referee,
 		Teams: Teams{
-			Home: Team{Name: m.Teams.Home.Name},
-			Away: Team{Name: m.Teams.Away.Name},
+			Home: Team{Name: m.Teams.Home.Name, Logo: m.Teams.Home.Logo},
+			Away: Team{Name: m.Teams.Away.Name, Logo: m.Teams.Away.Logo},
 		},
 		Score: Score{
 			Home: m.Goals.Home,
