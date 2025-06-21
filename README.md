@@ -8,7 +8,7 @@
 
 ### Backend
 - [Go](https://golang.org/)
-- [Gin](https://github.com/gin-gonic/gin) ou [Fiber](https://gofiber.io/) (em definição)
+- [Gin](https://github.com/gin-gonic/gin)
 - HTTP Client nativo
 - DotEnv para variáveis de ambiente
 
