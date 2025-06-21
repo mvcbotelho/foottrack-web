@@ -9,11 +9,8 @@ import (
 	"time"
 )
 
-type MatchResponse struct {
-	Response []interface{} `json:"response"`
-}
-
 func GetTodayMatches() ([]MatchFormatted, error) {
+
 	apiKey := os.Getenv("API_FOOTBALL_KEY")
 	if apiKey == "" {
 		return nil, fmt.Errorf("API key não encontrada")
@@ -26,9 +23,7 @@ func GetTodayMatches() ([]MatchFormatted, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	req.Header.Add("x-apisports-key", apiKey)
-	req.Header.Add("x-rapidapi-host", "v3.football.api-sports.io")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -37,35 +32,40 @@ func GetTodayMatches() ([]MatchFormatted, error) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 
-	var result MatchResponse
-	if err := json.Unmarshal(body, &result); err != nil {
+	var apiResp APIResponse
+	if err := json.Unmarshal(body, &apiResp); err != nil {
 		return nil, err
 	}
 
 	var formatted []MatchFormatted
-	for _, item := range result.Response {
-		raw := item.(map[string]interface{})
+	for _, m := range apiResp.Response {
+		home := m.Teams.Home.Name
+		away := m.Teams.Away.Name
 
-		fixture := raw["fixture"].(map[string]interface{})
-		league := raw["league"].(map[string]interface{})
-		teams := raw["teams"].(map[string]interface{})
-		score := raw["goals"].(map[string]interface{})
+		if !IsBrazilianTeam(home) && !IsBrazilianTeam(away) {
+			continue
+		}
 
 		formatted = append(formatted, MatchFormatted{
-			ID:     int(fixture["id"].(float64)),
-			Date:   fixture["date"].(string),
-			Status: fixture["status"].(map[string]interface{})["short"].(string),
-			League: league["name"].(string),
+			ID:     m.Fixture.ID,
+			Date:   m.Fixture.Date,
+			Status: m.Fixture.Status.Short,
+			League: m.League.Name,
 			Teams: Teams{
-				Home: Team{Name: teams["home"].(map[string]interface{})["name"].(string)},
-				Away: Team{Name: teams["away"].(map[string]interface{})["name"].(string)},
+				Home: Team{Name: m.Teams.Home.Name},
+				Away: Team{Name: m.Teams.Away.Name},
 			},
 			Score: Score{
-				Home: int(score["home"].(float64)),
-				Away: int(score["away"].(float64)),
+				Home: m.Goals.Home,
+				Away: m.Goals.Away,
 			},
+			Stadium: m.Fixture.Venue.Name,
+			Referee: m.Fixture.Referee,
 		})
 	}
 
@@ -86,7 +86,6 @@ func GetMatchDetails(matchID string) (MatchFormatted, error) {
 	}
 
 	req.Header.Add("x-apisports-key", apiKey)
-	req.Header.Add("x-rapidapi-host", "v3.football.api-sports.io")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -97,35 +96,31 @@ func GetMatchDetails(matchID string) (MatchFormatted, error) {
 
 	body, _ := io.ReadAll(resp.Body)
 
-	var result MatchResponse
-	if err := json.Unmarshal(body, &result); err != nil {
+	var apiResp APIResponse
+	if err := json.Unmarshal(body, &apiResp); err != nil {
 		return MatchFormatted{}, err
 	}
 
-	if len(result.Response) == 0 {
+	if len(apiResp.Response) == 0 {
 		return MatchFormatted{}, fmt.Errorf("Partida não encontrada")
 	}
 
-	raw := result.Response[0].(map[string]interface{})
-	fixture := raw["fixture"].(map[string]interface{})
-	league := raw["league"].(map[string]interface{})
-	teams := raw["teams"].(map[string]interface{})
-	score := raw["goals"].(map[string]interface{})
+	m := apiResp.Response[0]
 
 	formatted := MatchFormatted{
-		ID:      int(fixture["id"].(float64)),
-		Date:    fixture["date"].(string),
-		Status:  fixture["status"].(map[string]interface{})["short"].(string),
-		League:  league["name"].(string),
-		Stadium: fixture["venue"].(map[string]interface{})["name"].(string),
-		Referee: fixture["referee"].(string),
+		ID:      m.Fixture.ID,
+		Date:    m.Fixture.Date,
+		Status:  m.Fixture.Status.Short,
+		League:  m.League.Name,
+		Stadium: m.Fixture.Venue.Name,
+		Referee: m.Fixture.Referee,
 		Teams: Teams{
-			Home: Team{Name: teams["home"].(map[string]interface{})["name"].(string)},
-			Away: Team{Name: teams["away"].(map[string]interface{})["name"].(string)},
+			Home: Team{Name: m.Teams.Home.Name},
+			Away: Team{Name: m.Teams.Away.Name},
 		},
 		Score: Score{
-			Home: int(score["home"].(float64)),
-			Away: int(score["away"].(float64)),
+			Home: m.Goals.Home,
+			Away: m.Goals.Away,
 		},
 	}
 

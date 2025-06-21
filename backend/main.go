@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/mvcbotelho/foottrack-backend/routes"
@@ -19,6 +20,8 @@ func main() {
 	}
 
 	router := gin.Default()
+
+	router.Use(cors.Default())
 
 	routes.RegisterMatchRoutes(router)
 
