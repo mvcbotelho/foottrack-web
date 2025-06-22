@@ -1,113 +1,127 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
+
+	"github.com/mvcbotelho/foottrack-backend/config"
 )
 
-func GetTodayMatches() ([]MatchFormatted, error) {
+type APIFootballService struct {
+	client  *http.Client
+	config  *config.APIConfig
+	baseURL string
+}
 
-	apiKey := os.Getenv("API_FOOTBALL_KEY")
-	if apiKey == "" {
-		return nil, fmt.Errorf("API key não encontrada")
+func NewAPIFootballService(cfg *config.APIConfig) *APIFootballService {
+	return &APIFootballService{
+		client: &http.Client{
+			Timeout: cfg.Timeout,
+		},
+		config:  cfg,
+		baseURL: cfg.BaseURL,
 	}
+}
 
+func (s *APIFootballService) GetTodayMatches() ([]MatchFormatted, error) {
 	today := time.Now().Format("2006-01-02")
-	url := fmt.Sprintf("https://v3.football.api-sports.io/fixtures?date=%s", today)
+	return s.GetMatchesByDate(today)
+}
 
-	req, err := http.NewRequest("GET", url, nil)
+func (s *APIFootballService) GetMatchesByDate(date string) ([]MatchFormatted, error) {
+	url := fmt.Sprintf("%s/fixtures?date=%s", s.baseURL, date)
+
+	ctx, cancel := context.WithTimeout(context.Background(), s.config.Timeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("erro ao criar requisição: %w", err)
 	}
-	req.Header.Add("x-apisports-key", apiKey)
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	req.Header.Add("x-apisports-key", s.config.FootballKey)
+	req.Header.Add("x-rapidapi-host", "v3.football.api-sports.io")
+
+	resp, err := s.client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("erro na requisição HTTP: %w", err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API retornou status %d: %s", resp.StatusCode, string(body))
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("erro ao ler resposta: %w", err)
 	}
 
 	var apiResp APIResponse
 	if err := json.Unmarshal(body, &apiResp); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("erro ao deserializar resposta: %w", err)
 	}
 
-	var formatted []MatchFormatted
-	for _, m := range apiResp.Response {
-		home := m.Teams.Home.Name
-		away := m.Teams.Away.Name
-
-		if !IsBrazilianTeam(home) && !IsBrazilianTeam(away) {
-			continue
-		}
-
-		formatted = append(formatted, MatchFormatted{
-			ID:     m.Fixture.ID,
-			Date:   m.Fixture.Date,
-			Status: m.Fixture.Status.Short,
-			League: m.League.Name,
-			Teams: Teams{
-				Home: Team{Name: m.Teams.Home.Name},
-				Away: Team{Name: m.Teams.Away.Name},
-			},
-			Score: Score{
-				Home: m.Goals.Home,
-				Away: m.Goals.Away,
-			},
-			Stadium: m.Fixture.Venue.Name,
-			Referee: m.Fixture.Referee,
-		})
-	}
-
-	return formatted, nil
+	return s.formatMatches(apiResp.Response), nil
 }
 
-func GetMatchDetails(matchID string) (MatchFormatted, error) {
-	apiKey := os.Getenv("API_FOOTBALL_KEY")
-	if apiKey == "" {
-		return MatchFormatted{}, fmt.Errorf("API key não encontrada")
+func (s *APIFootballService) GetMatchDetails(matchID string) (MatchFormatted, error) {
+	url := fmt.Sprintf("%s/fixtures?id=%s", s.baseURL, matchID)
+
+	ctx, cancel := context.WithTimeout(context.Background(), s.config.Timeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return MatchFormatted{}, fmt.Errorf("erro ao criar requisição: %w", err)
 	}
 
-	url := fmt.Sprintf("https://v3.football.api-sports.io/fixtures?id=%s", matchID)
+	req.Header.Add("x-apisports-key", s.config.FootballKey)
+	req.Header.Add("x-rapidapi-host", "v3.football.api-sports.io")
 
-	req, err := http.NewRequest("GET", url, nil)
+	resp, err := s.client.Do(req)
 	if err != nil {
-		return MatchFormatted{}, err
-	}
-
-	req.Header.Add("x-apisports-key", apiKey)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return MatchFormatted{}, err
+		return MatchFormatted{}, fmt.Errorf("erro na requisição HTTP: %w", err)
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return MatchFormatted{}, fmt.Errorf("API retornou status %d: %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return MatchFormatted{}, fmt.Errorf("erro ao ler resposta: %w", err)
+	}
 
 	var apiResp APIResponse
 	if err := json.Unmarshal(body, &apiResp); err != nil {
-		return MatchFormatted{}, err
+		return MatchFormatted{}, fmt.Errorf("erro ao deserializar resposta: %w", err)
 	}
 
 	if len(apiResp.Response) == 0 {
-		return MatchFormatted{}, fmt.Errorf("Partida não encontrada")
+		return MatchFormatted{}, fmt.Errorf("partida não encontrada")
 	}
 
-	m := apiResp.Response[0]
+	return s.formatMatch(apiResp.Response[0]), nil
+}
 
-	formatted := MatchFormatted{
+func (s *APIFootballService) formatMatches(matches []MatchRaw) []MatchFormatted {
+	var formatted []MatchFormatted
+	for _, m := range matches {
+		formatted = append(formatted, s.formatMatch(m))
+	}
+	return formatted
+}
+
+func (s *APIFootballService) formatMatch(m MatchRaw) MatchFormatted {
+	return MatchFormatted{
 		ID:      m.Fixture.ID,
 		Date:    m.Fixture.Date,
 		Status:  m.Fixture.Status.Short,
@@ -115,14 +129,12 @@ func GetMatchDetails(matchID string) (MatchFormatted, error) {
 		Stadium: m.Fixture.Venue.Name,
 		Referee: m.Fixture.Referee,
 		Teams: Teams{
-			Home: Team{Name: m.Teams.Home.Name, Logo: m.Teams.Home.Logo},
-			Away: Team{Name: m.Teams.Away.Name, Logo: m.Teams.Away.Logo},
+			Home: Team{Name: m.Teams.Home.Name},
+			Away: Team{Name: m.Teams.Away.Name},
 		},
 		Score: Score{
 			Home: m.Goals.Home,
 			Away: m.Goals.Away,
 		},
 	}
-
-	return formatted, nil
 }
