@@ -226,7 +226,8 @@ Detalhes de uma partida específica
 
 ## 📷 Preview
 
-![Prévia da Interface do FootTrack](https://ibb.co/2VchsfF)
+![Prévia da Interface do FootTrack](https://github.com/user-attachments/assets/692f11c1-a3f9-4d29-917d-8c55afc3e540)
+
 
 *Interface moderna e responsiva, mostrando a lista de partidas do dia com um design inspirado em banners esportivos.*
 
