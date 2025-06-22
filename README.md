@@ -16,9 +16,11 @@
 
 ### Frontend
 - [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Axios](https://axios-http.com/)
+- [Vite](https://vitejs.dev/) - Build tool e dev server
+- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
+- [TanStack Query](https://tanstack.com/query) - Gerenciamento de estado e cache
+- [Axios](https://axios-http.com/) - Cliente HTTP
+- Componentes reutilizáveis e hooks personalizados
 
 ---
 
@@ -26,19 +28,22 @@
 
 - ✅ Listar partidas do dia
 - ✅ Visualizar detalhes e estatísticas da partida
-- ✅ Interface responsiva e leve
+- ✅ Interface responsiva e moderna
 - ✅ Paginação de resultados
 - ✅ Validação de parâmetros de entrada
 - ✅ Tratamento robusto de erros
 - ✅ Health check endpoint
+- ✅ Cache inteligente de dados
+- ✅ Loading states e feedback visual
+- ✅ Skeleton loading para melhor UX
 - 🔜 Cache de dados no backend
 - 🔜 Filtros por campeonato, time ou data
 
 ---
 
-## 🏗️ Arquitetura do Backend
+## 🏗️ Arquitetura
 
-### Estrutura de Pastas
+### Backend
 ```
 backend/
 ├── config/          # Configuração centralizada
@@ -48,33 +53,71 @@ backend/
 └── main.go         # Ponto de entrada da aplicação
 ```
 
+### Frontend
+```
+frontend/src/
+├── components/
+│   ├── ui/          # Componentes reutilizáveis (Button, Loading, Error)
+│   └── MatchCard.tsx
+├── hooks/           # Hooks personalizados para gerenciamento de estado
+├── pages/           # Páginas da aplicação
+├── services/        # Serviços de API
+├── types/           # Definições TypeScript
+└── App.tsx         # Componente principal
+```
+
 ### Melhorias Implementadas
 
-#### 🔒 **Segurança e Validação**
+#### 🔒 **Backend - Segurança e Validação**
 - Validação automática de parâmetros de entrada
 - Sanitização de dados da API externa
 - Configuração de CORS adequada
 - Validação de formato de data (YYYY-MM-DD)
 - Validação de IDs numéricos
 
-#### 🛡️ **Tratamento de Erros**
+#### 🛡️ **Backend - Tratamento de Erros**
 - Middleware global de tratamento de erros
 - Logging estruturado com informações detalhadas
 - Respostas de erro padronizadas
 - Tratamento de panics e recuperação
 - Timeout configurável para requisições HTTP
 
-#### ⚙️ **Configuração**
+#### ⚙️ **Backend - Configuração**
 - Configuração centralizada com validação
 - Variáveis de ambiente com valores padrão
 - Timeouts configuráveis (leitura, escrita, idle)
 - Configuração de servidor HTTP robusta
 
-#### 📊 **Monitoramento**
+#### 📊 **Backend - Monitoramento**
 - Health check endpoint (`/health`)
 - Logs detalhados de requisições
 - Métricas básicas de performance
 - Status de inicialização informativo
+
+#### 🎨 **Frontend - Gerenciamento de Estado**
+- TanStack Query para cache inteligente
+- Hooks personalizados para diferentes consultas
+- Retry automático e stale time configurável
+- DevTools para desenvolvimento
+
+#### 🧩 **Frontend - Componentes Reutilizáveis**
+- Loading com spinner e skeleton
+- Error com tratamento e retry
+- Button com variantes e loading state
+- MatchCard com design moderno
+
+#### 🔌 **Frontend - Serviços de API**
+- Axios com interceptors para logging
+- Timeout configurável
+- Tratamento de erros centralizado
+- Tipos TypeScript para respostas
+
+#### 🎯 **Frontend - UX/UI**
+- Skeleton loading para feedback visual
+- Estados de erro com opção de retry
+- Loading states em botões
+- Responsividade melhorada
+- Animações e transições suaves
 
 ---
 
@@ -103,8 +146,8 @@ go run main.go
 ### Frontend
 ```bash
 cd frontend
-yarn install
-yarn dev
+npm install
+npm run dev
 ```
 
 ---
@@ -124,6 +167,12 @@ IDLE_TIMEOUT=60s
 API_FOOTBALL_KEY=your_api_key_here
 API_FOOTBALL_BASE_URL=https://v3.football.api-sports.io
 API_TIMEOUT=10s
+```
+
+Para o frontend, crie um arquivo `.env` no diretório `frontend/`:
+
+```env
+VITE_API_URL=http://localhost:8080
 ```
 
 ---
@@ -154,6 +203,24 @@ Detalhes de uma partida específica
 
 ---
 
+## 🎨 Interface do Usuário
+
+### Características da UI
+- **Design Responsivo**: Adaptável a diferentes tamanhos de tela
+- **Loading States**: Feedback visual durante carregamento
+- **Error Handling**: Tratamento elegante de erros com opção de retry
+- **Skeleton Loading**: Placeholders animados para melhor UX
+- **Componentes Reutilizáveis**: Biblioteca de componentes consistentes
+- **Animações**: Transições suaves e feedback visual
+
+### Componentes Principais
+- **MatchCard**: Exibe informações da partida com design moderno
+- **Loading**: Spinner e skeleton para diferentes contextos
+- **Error**: Tratamento de erros com opções de retry
+- **Button**: Botão com variantes e estados de loading
+
+---
+
 ## 📷 Preview (Em breve)
 
 *Será adicionada uma imagem da interface aqui quando o frontend estiver implementado.*
@@ -165,9 +232,11 @@ Detalhes de uma partida específica
 - [ ] Implementar cache de respostas no backend
 - [ ] Adicionar rate limiting
 - [ ] Implementar testes unitários e de integração
-- [ ] Paginação e filtros no frontend
+- [ ] Adicionar navegação com React Router
+- [ ] Implementar filtros avançados no frontend
 - [ ] Deploy na Vercel e Render
 - [ ] Documentação Swagger/OpenAPI
+- [ ] Configurar PWA (Progressive Web App)
 
 ---
 

@@ -6,15 +6,17 @@ export interface Match {
   teams: {
     home: {
       name: string
-      logo: string
+      logo?: string
     }
     away: {
       name: string
-      logo: string
+      logo?: string
     }
   }
   score: {
     home: number
     away: number
   }
+  stadium?: string
+  referee?: string
 }
