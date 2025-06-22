@@ -159,44 +159,61 @@ go build -o foottrack-backend main.go
 ./foottrack-backend
 ```
 
-### Frontend
-```bash
-# Build para produção
-yarn build
+### GET `/matches`
+Lista partidas com paginação
+- **Query params:**
+  - `date` (opcional): Data no formato YYYY-MM-DD
+  - `page` (opcional): Número da página (padrão: 1)
+  - `limit` (opcional): Itens por página (padrão: 20, máx: 100)
 
-# Servir arquivos estáticos
-yarn preview
-```
+### GET `/matches/:id`
+Detalhes de uma partida específica
+- **Path params:**
+  - `id`: ID numérico da partida
 
-## 📝 Próximas Melhorias
+---
 
-### Alta Prioridade
-- [ ] **Filtros avançados** por liga, time, data
-- [ ] **Notificações em tempo real** para partidas ao vivo
-- [ ] **Favoritos** para times e partidas
-- [ ] **Histórico de partidas** com paginação
+## 🎨 Interface do Usuário
 
-### Média Prioridade
-- [ ] **Estatísticas detalhadas** dos times
-- [ ] **Comparação de times** head-to-head
-- [ ] **Modo escuro** na interface
-- [ ] **PWA** para instalação mobile
+### Características da UI
+- **Design Responsivo**: Adaptável a diferentes tamanhos de tela
+- **Loading States**: Feedback visual durante carregamento
+- **Error Handling**: Tratamento elegante de erros com opção de retry
+- **Skeleton Loading**: Placeholders animados para melhor UX
+- **Componentes Reutilizáveis**: Biblioteca de componentes consistentes
+- **Animações**: Transições suaves e feedback visual
 
-### Baixa Prioridade
-- [ ] **Múltiplas línguas** (inglês, espanhol)
-- [ ] **Temas personalizáveis** de cores
-- [ ] **Exportação de dados** (PDF, CSV)
-- [ ] **Integração com redes sociais**
+### Componentes Principais
+- **MatchCard**: Exibe informações da partida com um design de banner moderno, logos dos times e placar/horário em destaque.
+- **Loading**: Spinner e skeleton para diferentes contextos
+- **Error**: Tratamento de erros com opções de retry
+- **Button**: Botão com variantes e estados de loading
 
-## 🤝 Contribuição
+---
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+## 📷 Preview
 
-## 📄 Licença
+![Prévia da Interface do FootTrack](https://github.com/user-attachments/assets/692f11c1-a3f9-4d29-917d-8c55afc3e540)
+
+
+*Interface moderna e responsiva, mostrando a lista de partidas do dia com um design inspirado em banners esportivos.*
+
+---
+
+## 📌 Próximos passos
+
+- [ ] Implementar cache de respostas no backend
+- [ ] Adicionar rate limiting
+- [ ] Implementar testes unitários e de integração
+- [ ] Adicionar navegação com React Router
+- [ ] Implementar filtros avançados no frontend
+- [ ] Deploy na Vercel e Render
+- [ ] Documentação Swagger/OpenAPI
+- [ ] Configurar PWA (Progressive Web App)
+
+---
+
+## 📚 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
