@@ -111,7 +111,7 @@ export const matchService = {
   // Buscar detalhes de uma partida
   getMatchDetails: async (id: string): Promise<Match> => {
     try {
-      const response = await api.get<ApiResponse<Match>>(`/matches/${id}`);
+      const response = await api.get<{ data: Match }>(`/matches/${id}`);
       return response.data.data;
     } catch (error) {
       throw new Error(handleApiError(error));
