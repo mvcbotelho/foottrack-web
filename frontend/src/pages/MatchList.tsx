@@ -1,129 +1,87 @@
-import React, { useState } from 'react';
-import { useTodayMatches } from '@/hooks/useMatches';
+import { useState } from 'react';
+import { useMatches } from '@/hooks/useMatches';
 import MatchCard from '@/components/MatchCard';
 import { MatchCardSkeleton } from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
 import Button from '@/components/ui/Button';
-import type { Match } from '@/types/Match';
 
 export default function MatchList() {
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const { data: matches, isLoading, error, refetch } = useTodayMatches();
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const { data, isLoading, isError, error, refetch, isFetching } = useMatches({ date });
+
+  const matches = data?.matches || [];
+  const pagination = data?.pagination;
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value);
+    setDate(event.target.value);
   };
 
-  const handleViewDetails = (matchId: number) => {
-    // TODO: Implementar navegação para detalhes da partida
-    console.log('Ver detalhes da partida:', matchId);
-  };
-
-  const handleRefresh = () => {
-    refetch();
-  };
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Partidas do Dia</h1>
-          <p className="text-gray-600">Carregando partidas...</p>
-        </div>
-        <div className="space-y-4">
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="space-y-6">
           {Array.from({ length: 5 }).map((_, index) => (
             <MatchCardSkeleton key={index} />
           ))}
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Partidas do Dia</h1>
+    if (isError) {
+      return <Error message={error.message} onRetry={() => refetch()} />;
+    }
+
+    if (matches.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Nenhuma partida encontrada</h3>
+          <p className="text-gray-500 mb-4">Não há partidas programadas para a data selecionada.</p>
+          <Button onClick={() => refetch()} loading={isFetching}>Tentar novamente</Button>
         </div>
-        <Error 
-          message={error.message} 
-          onRetry={handleRefresh}
-        />
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {matches.map((match) => (
+          <MatchCard key={match.id} match={match} />
+        ))}
       </div>
     );
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Partidas do Dia
-            </h1>
-            <p className="text-gray-600">
-              {matches?.length || 0} partidas encontradas
-            </p>
-          </div>
-          
-          <div className="flex gap-2">
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={handleDateChange}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <Button
-              variant="outline"
-              onClick={handleRefresh}
-              loading={isLoading}
-            >
-              Atualizar
-            </Button>
-          </div>
-        </div>
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-800 uppercase tracking-wider">
+          Jogos do Dia
+        </h1>
+        <p className="text-gray-500 mt-1">
+          Acompanhe os resultados do seu time favorito
+        </p>
+      </div>
+      
+      {/* Controles */}
+      <div className="flex justify-center items-center gap-4 mb-8">
+        <input
+          type="date"
+          value={date}
+          onChange={handleDateChange}
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+        />
+        <Button
+          variant="primary"
+          onClick={() => refetch()}
+          loading={isFetching}
+          disabled={isLoading}
+        >
+          {isFetching ? 'Buscando...' : 'Buscar Jogos'}
+        </Button>
       </div>
 
-      {/* Lista de partidas */}
-      {matches && matches.length > 0 ? (
-        <div className="space-y-4">
-          {matches.map((match: Match) => (
-            <MatchCard
-              key={match.id}
-              match={match}
-              onViewDetails={handleViewDetails}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg 
-              className="w-8 h-8 text-gray-400" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-              />
-            </svg>
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Nenhuma partida encontrada
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Não há partidas programadas para hoje.
-          </p>
-          <Button onClick={handleRefresh}>
-            Tentar novamente
-          </Button>
-        </div>
-      )}
+      {/* Conteúdo */}
+      {renderContent()}
     </div>
   );
 }

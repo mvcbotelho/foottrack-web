@@ -17,16 +17,17 @@
 ### Frontend
 - [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
 - [Vite](https://vitejs.dev/) - Build tool e dev server
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
+- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS com configuração robusta
 - [TanStack Query](https://tanstack.com/query) - Gerenciamento de estado e cache
 - [Axios](https://axios-http.com/) - Cliente HTTP
-- Componentes reutilizáveis e hooks personalizados
+- **Design Moderno:** Componentes reutilizáveis e hooks personalizados
 
 ---
 
 ## 🔧 Funcionalidades
 
 - ✅ Listar partidas do dia
+- ✅ **Design Moderno e Inspirador:** Interface baseada em designs de alta qualidade
 - ✅ Visualizar detalhes e estatísticas da partida
 - ✅ Interface responsiva e moderna
 - ✅ Paginação de resultados
@@ -36,6 +37,7 @@
 - ✅ Cache inteligente de dados
 - ✅ Loading states e feedback visual
 - ✅ Skeleton loading para melhor UX
+- ✅ **Contraste e Legibilidade:** Ajustes finos de UI para melhor experiência
 - 🔜 Cache de dados no backend
 - 🔜 Filtros por campeonato, time ou data
 
@@ -113,6 +115,7 @@ frontend/src/
 - Tipos TypeScript para respostas
 
 #### 🎯 **Frontend - UX/UI**
+- **Design Moderno:** Interface redesenhada para ser visualmente atraente e profissional.
 - Skeleton loading para feedback visual
 - Estados de erro com opção de retry
 - Loading states em botões
@@ -214,7 +217,7 @@ Detalhes de uma partida específica
 - **Animações**: Transições suaves e feedback visual
 
 ### Componentes Principais
-- **MatchCard**: Exibe informações da partida com design moderno
+- **MatchCard**: Exibe informações da partida com um design de banner moderno, logos dos times e placar/horário em destaque.
 - **Loading**: Spinner e skeleton para diferentes contextos
 - **Error**: Tratamento de erros com opções de retry
 - **Button**: Botão com variantes e estados de loading

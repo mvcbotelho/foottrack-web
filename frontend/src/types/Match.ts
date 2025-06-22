@@ -14,8 +14,8 @@ export interface Match {
     }
   }
   score: {
-    home: number
-    away: number
+    home: number | null
+    away: number | null
   }
   stadium?: string
   referee?: string
