@@ -1,77 +1,50 @@
 import type { Match } from '@/types/Match';
 
-export default function MatchCard({ match }: { match: Match }) {
-  const formatTime = (dateString: string) => {
-    if (!dateString) return 'A definir';
-    try {
-      return new Date(dateString)
-        .toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        .replace(':', 'H');
-    } catch (e) {
-      return 'A definir';
-    }
-  };
+interface MatchCardProps {
+  match: any;
+  onViewDetails: (matchId: number) => void;
+}
 
-  const getInitials = (name: string) => {
-    if (!name) return '?';
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase();
-  };
-
-  const score = match.score.home !== null && match.score.away !== null
-      ? `${match.score.home} x ${match.score.away}`
-      : formatTime(match.date);
-
-  const scoreOrTimeStyles = match.score.home !== null
-    ? "text-2xl"
-    : "text-lg";
+export default function MatchCard({ match, onViewDetails }: MatchCardProps) {
+  if (!match || !match.id || !match.teams) return null;
 
   return (
-    <div className="font-sans w-full max-w-2xl mx-auto">
-      <div className="flex items-center justify-between">
-        {/* Time da Casa */}
-        <div className="flex flex-col items-center w-24">
-          {match.teams.home.logo ? (
-            <img src={match.teams.home.logo} alt={match.teams.home.name} className="h-14 w-14 object-contain" />
-          ) : (
-            <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-500">
-              {getInitials(match.teams.home.name)}
-            </div>
-          )}
-        </div>
-
-        {/* Banner Central */}
-        <div className="relative flex-grow text-center mx-2">
-          {/* Placar ou Horário */}
-          <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-900 font-bold px-5 py-1.5 rounded-full z-10 whitespace-nowrap ${scoreOrTimeStyles}`}>
-            {score}
-          </div>
-
-          {/* Banner com Times */}
-          <div className="bg-gray-800 text-white font-bold text-md uppercase py-4 px-2 rounded-lg relative overflow-hidden flex items-center justify-between">
-            <span className="truncate w-2/5 text-right pr-2">
-              {match.teams.home.name}
-            </span>
-            <span className="text-white text-sm font-semibold pt-3">vs</span>
-            <span className="truncate w-2/5 text-left pl-2">
-              {match.teams.away.name}
-            </span>
+    <div
+      className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+      onClick={() => onViewDetails(match.id)}
+    >
+      <div className="bg-gray-800 text-white p-2 text-center">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium">{match.league}</span>
+          <div className="px-2 py-1 rounded text-xs font-bold bg-blue-500">
+            {match.status}
           </div>
         </div>
-
-        {/* Time Visitante */}
-        <div className="flex flex-col items-center w-24">
-          {match.teams.away.logo ? (
-            <img src={match.teams.away.logo} alt={match.teams.away.name} className="h-14 w-14 object-contain" />
-          ) : (
-            <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-500">
-              {getInitials(match.teams.away.name)}
+      </div>
+      <div className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex-1 text-center">
+            <img src={match.teams.home.logo} alt={match.teams.home.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
+            <h3 className="text-sm font-semibold text-gray-800 truncate">{match.teams.home.name}</h3>
+          </div>
+          <div className="mx-4 text-center">
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {match.score.home} <span className="text-white mx-2">vs</span> {match.score.away}
             </div>
-          )}
+            <div className="text-xs text-gray-500">
+              {new Date(match.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+          <div className="flex-1 text-center">
+            <img src={match.teams.away.logo} alt={match.teams.away.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
+            <h3 className="text-sm font-semibold text-gray-800 truncate">{match.teams.away.name}</h3>
+          </div>
         </div>
+        {match.stadium && (
+          <div className="mt-3 text-center">
+            <p className="text-xs text-gray-500">📍 {match.stadium}</p>
+          </div>
+        )}
       </div>
     </div>
   );

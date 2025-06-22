@@ -1,56 +1,39 @@
-# ⚽ FootTrack
+# ⚽ FootTrack - Rastreador de Partidas de Futebol
 
-**FootTrack** é uma aplicação web que permite visualizar partidas de futebol do dia e consultar estatísticas detalhadas de cada jogo. O projeto foi criado como uma vitrine técnica utilizando **Go no backend** e **React + Tailwind no frontend**, integrando com a [API-Football](https://www.api-football.com/) como fonte de dados.
+Uma aplicação web moderna para acompanhar partidas de futebol em tempo real, desenvolvida com Go (backend) e React + TypeScript (frontend).
 
----
+![FootTrack Interface](https://via.placeholder.com/800x400/1f2937/ffffff?text=FootTrack+Interface)
 
-## 🚀 Tecnologias Utilizadas
+## 🚀 Funcionalidades
 
-### Backend
-- [Go](https://golang.org/)
-- [Gin](https://github.com/gin-gonic/gin) - Framework web
-- HTTP Client nativo com timeout configurável
-- DotEnv para variáveis de ambiente
-- Middleware de validação e tratamento de erros
-- Configuração centralizada
+### Backend (Go)
+- ✅ **API RESTful** com endpoints para buscar partidas
+- ✅ **Integração com API-Football** para dados em tempo real
+- ✅ **Configuração centralizada** com variáveis de ambiente
+- ✅ **Middlewares robustos** para tratamento de erros e validação
+- ✅ **Estrutura modular** com separação clara de responsabilidades
+- ✅ **Logging estruturado** para monitoramento
+- ✅ **Timeouts configuráveis** para requisições externas
 
-### Frontend
-- [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/) - Build tool e dev server
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS com configuração robusta
-- [TanStack Query](https://tanstack.com/query) - Gerenciamento de estado e cache
-- [Axios](https://axios-http.com/) - Cliente HTTP
-- **Design Moderno:** Componentes reutilizáveis e hooks personalizados
-
----
-
-## 🔧 Funcionalidades
-
-- ✅ Listar partidas do dia
-- ✅ **Design Moderno e Inspirador:** Interface baseada em designs de alta qualidade
-- ✅ Visualizar detalhes e estatísticas da partida
-- ✅ Interface responsiva e moderna
-- ✅ Paginação de resultados
-- ✅ Validação de parâmetros de entrada
-- ✅ Tratamento robusto de erros
-- ✅ Health check endpoint
-- ✅ Cache inteligente de dados
-- ✅ Loading states e feedback visual
-- ✅ Skeleton loading para melhor UX
-- ✅ **Contraste e Legibilidade:** Ajustes finos de UI para melhor experiência
-- 🔜 Cache de dados no backend
-- 🔜 Filtros por campeonato, time ou data
-
----
+### Frontend (React + TypeScript)
+- ✅ **Interface moderna e responsiva** com Tailwind CSS
+- ✅ **Gerenciamento de estado** com React Query
+- ✅ **Componentes reutilizáveis** (Loading, Error, Button, etc.)
+- ✅ **Hooks personalizados** para operações de API
+- ✅ **Navegação com React Router** entre páginas
+- ✅ **Página de detalhes da partida** com informações completas
+- ✅ **Layout consistente** com cabeçalho e rodapé
+- ✅ **Tratamento de erros** e estados de loading
+- ✅ **Design responsivo** para mobile e desktop
 
 ## 🏗️ Arquitetura
 
 ### Backend
 ```
 backend/
-├── config/          # Configuração centralizada
-├── middleware/      # Middlewares (erro, validação, CORS)
-├── routes/          # Handlers e rotas
+├── config/          # Configurações da aplicação
+├── middleware/      # Middlewares (erro, validação, logging)
+├── routes/          # Definição das rotas da API
 ├── services/        # Lógica de negócio e integração com APIs
 └── main.go         # Ponto de entrada da aplicação
 ```
@@ -58,200 +41,172 @@ backend/
 ### Frontend
 ```
 frontend/src/
-├── components/
-│   ├── ui/          # Componentes reutilizáveis (Button, Loading, Error)
-│   └── MatchCard.tsx
-├── hooks/           # Hooks personalizados para gerenciamento de estado
-├── pages/           # Páginas da aplicação
-├── services/        # Serviços de API
-├── types/           # Definições TypeScript
-└── App.tsx         # Componente principal
+├── components/      # Componentes reutilizáveis
+│   ├── ui/         # Componentes de UI básicos
+│   └── layouts/    # Layouts da aplicação
+├── hooks/          # Hooks personalizados
+├── pages/          # Páginas da aplicação
+├── services/       # Serviços de API
+├── types/          # Definições de tipos TypeScript
+└── App.tsx         # Componente principal com rotas
 ```
 
-### Melhorias Implementadas
+## 🛠️ Tecnologias Utilizadas
 
-#### 🔒 **Backend - Segurança e Validação**
-- Validação automática de parâmetros de entrada
-- Sanitização de dados da API externa
-- Configuração de CORS adequada
-- Validação de formato de data (YYYY-MM-DD)
-- Validação de IDs numéricos
+### Backend
+- **Go 1.21+** - Linguagem principal
+- **Gin** - Framework web
+- **API-Football** - Dados de partidas
+- **Viper** - Gerenciamento de configuração
+- **Zap** - Logging estruturado
 
-#### 🛡️ **Backend - Tratamento de Erros**
-- Middleware global de tratamento de erros
-- Logging estruturado com informações detalhadas
-- Respostas de erro padronizadas
-- Tratamento de panics e recuperação
-- Timeout configurável para requisições HTTP
+### Frontend
+- **React 18** - Biblioteca de UI
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool e dev server
+- **Tailwind CSS** - Framework de estilos
+- **React Query** - Gerenciamento de estado e cache
+- **React Router** - Navegação entre páginas
+- **Axios** - Cliente HTTP
 
-#### ⚙️ **Backend - Configuração**
-- Configuração centralizada com validação
-- Variáveis de ambiente com valores padrão
-- Timeouts configuráveis (leitura, escrita, idle)
-- Configuração de servidor HTTP robusta
-
-#### 📊 **Backend - Monitoramento**
-- Health check endpoint (`/health`)
-- Logs detalhados de requisições
-- Métricas básicas de performance
-- Status de inicialização informativo
-
-#### 🎨 **Frontend - Gerenciamento de Estado**
-- TanStack Query para cache inteligente
-- Hooks personalizados para diferentes consultas
-- Retry automático e stale time configurável
-- DevTools para desenvolvimento
-
-#### 🧩 **Frontend - Componentes Reutilizáveis**
-- Loading com spinner e skeleton
-- Error com tratamento e retry
-- Button com variantes e loading state
-- MatchCard com design moderno
-
-#### 🔌 **Frontend - Serviços de API**
-- Axios com interceptors para logging
-- Timeout configurável
-- Tratamento de erros centralizado
-- Tipos TypeScript para respostas
-
-#### 🎯 **Frontend - UX/UI**
-- **Design Moderno:** Interface redesenhada para ser visualmente atraente e profissional.
-- Skeleton loading para feedback visual
-- Estados de erro com opção de retry
-- Loading states em botões
-- Responsividade melhorada
-- Animações e transições suaves
-
----
-
-## 📦 Instalação
+## 📦 Instalação e Execução
 
 ### Pré-requisitos
 - Go 1.21+
 - Node.js 18+
-- Conta gratuita na [API-Football](https://dashboard.api-football.com/)
 - Yarn ou npm
-
-### Clonando o repositório
-```bash
-git clone https://github.com/seuusuario/foottrack.git
-cd foottrack
-```
+- Chave da API-Football
 
 ### Backend
 ```bash
 cd backend
+
+# Instalar dependências
+go mod download
+
+# Configurar variáveis de ambiente
 cp .env.example .env
-# Configure sua API key no arquivo .env
+# Editar .env com sua chave da API-Football
+
+# Executar
 go run main.go
 ```
 
 ### Frontend
 ```bash
 cd frontend
-npm install
-npm run dev
+
+# Instalar dependências
+yarn install
+
+# Executar em modo desenvolvimento
+yarn dev
 ```
 
----
+## 🌐 Endpoints da API
 
-## 🔑 Variáveis de ambiente
+### Partidas
+- `GET /matches` - Lista partidas do dia
+- `GET /matches/:id` - Detalhes de uma partida específica
+- `GET /matches?date=YYYY-MM-DD` - Partidas por data
 
-Crie um arquivo `.env` no diretório `backend/` com as seguintes configurações:
+### Health Check
+- `GET /health` - Status da aplicação
 
+## 🎨 Interface do Usuário
+
+### Página Principal (`/`)
+- Lista de partidas do dia
+- Cards interativos com informações essenciais
+- Status visual das partidas (ao vivo, finalizado, etc.)
+- Navegação para detalhes ao clicar nos cards
+
+### Página de Detalhes (`/match/:id`)
+- Informações completas da partida
+- Detalhes do placar (1º tempo, 2º tempo, prorrogação, pênaltis)
+- Informações do estádio e árbitro
+- Dados da liga e temporada
+- Botão para voltar à lista
+
+### Layout Consistente
+- Cabeçalho com logo e navegação
+- Rodapé com informações do projeto
+- Design responsivo para todos os dispositivos
+
+## 🔧 Configuração
+
+### Variáveis de Ambiente (Backend)
 ```env
-# Configurações do Servidor
+API_FOOTBALL_KEY=sua_chave_aqui
+API_FOOTBALL_HOST=v3.football.api-sports.io
 PORT=8080
-READ_TIMEOUT=30s
-WRITE_TIMEOUT=30s
-IDLE_TIMEOUT=60s
-
-# Configurações da API Football
-API_FOOTBALL_KEY=your_api_key_here
-API_FOOTBALL_BASE_URL=https://v3.football.api-sports.io
-API_TIMEOUT=10s
+ENV=development
 ```
 
-Para o frontend, crie um arquivo `.env` no diretório `frontend/`:
-
+### Variáveis de Ambiente (Frontend)
 ```env
 VITE_API_URL=http://localhost:8080
 ```
 
----
+## 🚀 Deploy
 
-## 📡 Endpoints da API
+### Backend
+```bash
+# Build para produção
+go build -o foottrack-backend main.go
 
-### GET `/health`
-Health check da aplicação
-```json
-{
-  "status": "ok",
-  "timestamp": "2024-01-01T00:00:00Z",
-  "service": "foottrack-backend"
-}
+# Executar
+./foottrack-backend
 ```
 
-### GET `/matches`
-Lista partidas com paginação
-- **Query params:**
-  - `date` (opcional): Data no formato YYYY-MM-DD
-  - `page` (opcional): Número da página (padrão: 1)
-  - `limit` (opcional): Itens por página (padrão: 20, máx: 100)
+### Frontend
+```bash
+# Build para produção
+yarn build
 
-### GET `/matches/:id`
-Detalhes de uma partida específica
-- **Path params:**
-  - `id`: ID numérico da partida
+# Servir arquivos estáticos
+yarn preview
+```
 
----
+## 📝 Próximas Melhorias
 
-## 🎨 Interface do Usuário
+### Alta Prioridade
+- [ ] **Filtros avançados** por liga, time, data
+- [ ] **Notificações em tempo real** para partidas ao vivo
+- [ ] **Favoritos** para times e partidas
+- [ ] **Histórico de partidas** com paginação
 
-### Características da UI
-- **Design Responsivo**: Adaptável a diferentes tamanhos de tela
-- **Loading States**: Feedback visual durante carregamento
-- **Error Handling**: Tratamento elegante de erros com opção de retry
-- **Skeleton Loading**: Placeholders animados para melhor UX
-- **Componentes Reutilizáveis**: Biblioteca de componentes consistentes
-- **Animações**: Transições suaves e feedback visual
+### Média Prioridade
+- [ ] **Estatísticas detalhadas** dos times
+- [ ] **Comparação de times** head-to-head
+- [ ] **Modo escuro** na interface
+- [ ] **PWA** para instalação mobile
 
-### Componentes Principais
-- **MatchCard**: Exibe informações da partida com um design de banner moderno, logos dos times e placar/horário em destaque.
-- **Loading**: Spinner e skeleton para diferentes contextos
-- **Error**: Tratamento de erros com opções de retry
-- **Button**: Botão com variantes e estados de loading
+### Baixa Prioridade
+- [ ] **Múltiplas línguas** (inglês, espanhol)
+- [ ] **Temas personalizáveis** de cores
+- [ ] **Exportação de dados** (PDF, CSV)
+- [ ] **Integração com redes sociais**
 
----
+## 🤝 Contribuição
 
-## 📷 Preview
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-![Prévia da Interface do FootTrack](https://ibb.co/2VchsfF)
+## 📄 Licença
 
-*Interface moderna e responsiva, mostrando a lista de partidas do dia com um design inspirado em banners esportivos.*
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
----
+## 👨‍💻 Desenvolvedor
 
-## 📌 Próximos passos
+**Marcus Botelho** - Desenvolvedor Full Stack
 
-- [ ] Implementar cache de respostas no backend
-- [ ] Adicionar rate limiting
-- [ ] Implementar testes unitários e de integração
-- [ ] Adicionar navegação com React Router
-- [ ] Implementar filtros avançados no frontend
-- [ ] Deploy na Vercel e Render
-- [ ] Documentação Swagger/OpenAPI
-- [ ] Configurar PWA (Progressive Web App)
+- GitHub: [@mvcbotelho](https://github.com/mvcbotelho)
+- LinkedIn: [Marcus Botelho](https://linkedin.com/in/marcus-botelho)
 
 ---
 
-## 📚 Licença
-
-Este projeto está sob a licença MIT. Sinta-se livre para usar, contribuir ou adaptar.
-
----
-
-## ✍️ Autor
-
-**Marcus Botelho**  
-[LinkedIn](https://www.linkedin.com/in/mvcbotelho) • marcus.itec@gmail.com
+Desenvolvido com ❤️ para a comunidade de futebol! ⚽

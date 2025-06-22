@@ -30,7 +30,7 @@ func RegisterMatchRoutes(r *gin.Engine, handler *MatchHandler) {
 func (h *MatchHandler) GetMatches(c *gin.Context) {
 	date := c.Query("date")
 
-	var matches []services.MatchFormatted
+	var matches []services.MatchComplete
 	var err error
 
 	if date != "" {
@@ -56,7 +56,7 @@ func (h *MatchHandler) GetMatches(c *gin.Context) {
 	end := start + limit
 
 	if start >= len(matches) {
-		matches = []services.MatchFormatted{}
+		matches = []services.MatchComplete{}
 	} else if end > len(matches) {
 		matches = matches[start:]
 	} else {
